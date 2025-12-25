@@ -9,14 +9,19 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(to right, #0b0c28, #1e2761, #4b2e83);
 }
 
 .calculator {
-  background: white;
-  width: 400px;
-  border-radius: 12px;
+  background: #191927;
+  width: 400px;          /* keeps width fixed unless screen is small */
+  aspect-ratio: 2 / 3;   /* NEW → height is 1.5× the width (taller) */
+  border-radius: 18px;
+  overflow: hidden;
   box-shadow: 0 5px 30px -5px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(111, 112, 112, 0.25);
+  display: flex;         /* NEW → ensures display + buttons fill space vertically */
+  flex-direction: column;
 }
 
 /* Display */
@@ -25,18 +30,51 @@ body {
   color: white;
   margin: 0;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
   justify-content: flex-end;
   border-radius: 10px 10px 0 0;
 }
 
+.small-base {
+  font-size: 0.7em;      /* makes both x and y smaller */
+}
+
+.small-base sup {
+  font-size: 0.6em;      /* optional: make exponent slightly smaller than base */
+  vertical-align: super;  /* ensures it sits higher */
+}
+sup {
+  font-size: 0.6em;  /* smaller than normal text */
+  vertical-align: super;  /* make it rise above baseline */
+}
+
+.history {
+    position: relative;
+    top: 60px;  /* moves the text down by 15px */
+    right: 25px;
+    margin: 0;
+    padding: 0;
+    color: #aaa;
+    font-size: 18px;
+    height: 22px;
+    user-select: none;
+    text-align: right;
+    width: 100%;
+}
+
 .calculator-display h1 {
   margin: 0;
-  padding: 25px;
+  padding: 40px 25px;   /* was 25px → increases vertical height */
   font-size: 45px;
   font-family: 'Lucida Console', sans-serif;
   font-weight: 100;
   overflow-x: auto;
+  position: relative;
+  top: 20px;
+  white-space: nowrap;      /* prevent wrapping */
+  overflow-x: auto;         /* allow horizontal scrolling */
+  text-overflow: clip;      /* optional, avoids ellipsis */
 }
 
 /* Custom Scrollbar */
@@ -60,18 +98,37 @@ body {
 .calculator-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  padding: 10px;
+  gap: 18px;          /* was 10px → brings buttons closer */
+  
+  padding: 17px 30px 10px; /* adds extra space at top and normal padding elsewhere */
+  justify-items: center;
+  align-items: center;
 }
 
+::selection {
+    background-color: #6D4AFF;   /* the colour you asked for */
+    color: white;                /* optional – makes the selected text readable */
+}
+
+/* Firefox needs the vendor prefix */
+::-moz-selection {
+    background-color: #6D4AFF;
+    color: white;
+}
+
+/* Buttons: drive size by width only, use aspect-ratio for height */
 button {
-  min-height: 50px;
-  font-size: 20px;
+  width: min(68px, 100%); /* try 68px circles; will shrink to 100% of cell if needed */
+  aspect-ratio: 1 / 1;    /* keep perfect square -> circle after border-radius */
+  border-radius: 50%;
+  font-size: 18px;
   font-weight: 100;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
   background: rgb(199, 199, 199);
+
+  display: inline-grid;
+  place-items: center;    /* center label inside circle */
 }
 
 button:hover {
@@ -87,13 +144,13 @@ button:focus {
 }
 
 .operator {
-  background: grey;
+  background: #6D49FF;
   color: white;
   font-size: 30px;
 }
 
 .clear {
-  background: rgb(255, 40, 40);
+  background: #E53366;
   color: white;
 }
 
@@ -101,11 +158,7 @@ button:focus {
   filter: brightness(90%);
 }
 
-.equal-sign {
-  grid-column: -2;
-  grid-row: 2 / span 4;
-  background: rgb(13, 206, 87);
-}
+
 
 /* Media Query: Large Smartphone (Vertical) */
 @media screen and (max-width: 600px) {
